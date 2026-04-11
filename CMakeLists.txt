@@ -1,3 +1,32 @@
+#############################################################[Chinese Manual]###################################################################
+# *****工程路径不要包含中文字符和空格,否则可能会报错！*****
+# 第一步： 确认机器上已经安装了MRS的工具链(假设当前平台为Linux,工具链路径为"/path/to/toolchain/RISC-V Embedded GCC12",工具链相关前缀为"riscv-wch-elf-")
+# 第二步: 设置工具链路径,例如修改替换下方的set(TOOLCHAIN_FOLDER "/path/to/toolchain/RISC-V Embedded GCC12")
+# 第三步: 设置工具链中相关可执行文件的前缀,例如修改替换下方的set(TOOLCHAIN_PREFIX "riscv-wch-elf-")
+# 第四步: 执行 cd your/path/of/project
+# 第五步: 执行 cmake -B build -G "Unix Makefiles"
+# 第六步: 执行 cmake --build build
+# 注意: 在Windows平台运行,需要a.安装GNU MAKE并将其路径(bin目录)添加到系统环境变量,之后执行cmake -B build -G "Unix Makefiles"(推荐)
+#       或者b.安装MinGW,将其路径(bin目录)添加到系统环境变量,之后执行cmake -B build -G "MinGW Makefiles"
+# 如有相关疑问,可通过support@mounriver.com联系我们
+#################################################################################################################################################
+
+
+#############################################################[English Manual]###################################################################
+# Step 1: Confirm that the MRS toolchain has been installed on the machine. Assuming the current platform is Linux, 
+#         the toolchain path is "/path/to/toolchain/RISC-V Embedded GCC12", and the toolchain-related prefix is "riscv-wch-elf-"
+# Step 2: Set the toolchain path, for example, modify and replace the following "set (TOOLCHAIN_FOLDER "/path/to/toolchain/RISC-V Embedded GCC12")"
+# Step 3: Set the prefix of the executable files in the toolchain,for example, modify and replace the following "set(TOOLCHAIN_PREFIX "riscv-wch-elf-")"
+# Step 4: Call "cd your/path/of/project"
+# Step 5: Call "cmake -B build -G "Unix Makefiles""
+# Step 6: Call "cmake --build build"
+# Note:   To run on Windows, you need: a. Install GNU MAKE and add its path (the bin directory) to the system environment PATH. 
+#         Then call the execution of "cmake -B build -G "Unix Makefiles""(Recommanded).
+#         or b. Install MinGW and add its path (the bin directory) to the system environment PATH. 
+#         Then call the execution of "cmake -B build -G "MinGW Makefiles"".
+# If you have any questions, please contact us at support@mounriver.com
+#################################################################################################################################################
+
 
 # Set CMake minimum require
 cmake_minimum_required(VERSION 3.16)
@@ -30,7 +59,7 @@ set(CMAKE_CXX_OUTPUT_EXTENSION .o)
 project("${PROJECT_NAME}" LANGUAGES C ASM CXX)
 
 # Use relative path
-add_compile_options(-fmacro-prefix-map=${CMAKE_SOURCE_DIR}=.. -ffreestanding)
+add_compile_options(-fmacro-prefix-map=${CMAKE_SOURCE_DIR}=..)
 
 
 set(SRC_FILES 
@@ -77,19 +106,13 @@ set(CMAKE_ASM_FLAGS " -march=rv32imacxw -mabi=ilp32 -mcmodel=medany -msmall-data
 
 add_executable("${TARGET_ARTIFACT}" ${SRC_FILES})
 
-set_target_properties("${TARGET_ARTIFACT}" PROPERTIES LINK_FLAGS " -march=rv32imacxw -mabi=ilp32 -mcmodel=medany -msmall-data-limit=8 -mno-save-restore -fmax-errors=20 -Os -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -fno-common -g -T \"${CMAKE_CURRENT_SOURCE_DIR}/HAL/Link.ld\"  -L\"${CMAKE_CURRENT_SOURCE_DIR}/\" -L\"${CMAKE_CURRENT_SOURCE_DIR}/LIB/\"  -nostartfiles -Xlinker --gc-sections -Xlinker --print-memory-usage -Wl,-Map,\"HID_Mouse.map\" -o \"HID_Mouse.elf\" ")
-add_link_options(
-		)
+set_target_properties("${TARGET_ARTIFACT}" PROPERTIES LINK_FLAGS " -march=rv32imacxw -mabi=ilp32 -mcmodel=medany -msmall-data-limit=8 -mno-save-restore -fmax-errors=20 -Os -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -fno-common -g -T \"${CMAKE_CURRENT_SOURCE_DIR}/HAL/Link.ld\"  -L\"${CMAKE_CURRENT_SOURCE_DIR}/\" -L\"${CMAKE_CURRENT_SOURCE_DIR}/LIB/\"  -nostartfiles -Xlinker --gc-sections -Xlinker --print-memory-usage -Wl,-Map,\"HID_Mouse.map\" --specs=nano.specs --specs=nosys.specs -o \"HID_Mouse.elf\" ")
 
 target_link_libraries(
 "${TARGET_ARTIFACT}" 
 wchble
+c
 )
-
-target_compile_definitions(
-		${TARGET_ARTIFACT}
-		PRIVATE
-		)
 
 add_custom_command(TARGET "${TARGET_ARTIFACT}" 
 POST_BUILD 
