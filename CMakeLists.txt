@@ -111,6 +111,7 @@ set_target_properties("${TARGET_ARTIFACT}" PROPERTIES LINK_FLAGS " -march=rv32im
 target_link_libraries(
 "${TARGET_ARTIFACT}" 
 wchble
+c
 )
 
 add_custom_command(TARGET "${TARGET_ARTIFACT}" 

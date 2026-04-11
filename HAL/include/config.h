@@ -23,7 +23,7 @@
 #ifdef WCHBLE_ROM
 #include "WCHBLE_ROM.H"
 #else
-#include "wchble.H"
+#include "wchble.h"
 #endif
 
 #include "ch32v20x.h"
