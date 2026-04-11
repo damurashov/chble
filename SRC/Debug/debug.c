@@ -11,6 +11,7 @@
  * microcontroller manufactured by Nanjing Qinheng Microelectronics.
  *******************************************************************************/
 #include "debug.h"
+#include <stddef.h>
 
 static uint8_t  p_us = 0;
 static uint16_t p_ms = 0;

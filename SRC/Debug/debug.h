@@ -13,7 +13,7 @@
 #ifndef __DEBUG_H
 #define __DEBUG_H
 
-#include "stdio.h"
+/* #include "stdio.h" */
 #include "ch32v20x.h"
 
 #ifdef __cplusplus

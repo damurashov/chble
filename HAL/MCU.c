@@ -13,7 +13,7 @@
 /******************************************************************************/
 /* Header file contains */
 #include "HAL.h"
-#include "string.h"
+// #include <string.h>
 
 tmosTaskID halTaskID;
 uint32_t g_LLE_IRQLibHandlerLocation;
@@ -226,7 +226,7 @@ tmosEvents HAL_ProcessEvent(tmosTaskID task_id, tmosEvents events)
 /*******************************************************************************
  * @fn      HAL_Init
  *
- * @brief   Ó²¼þ³õÊ¼»¯
+ * @brief   Ó²ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½
  *
  * @param   None.
  *
