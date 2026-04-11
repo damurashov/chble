@@ -1,5 +1,5 @@
 # Toolchain
-PREFIX = riscv64-unknown-elf-
+PREFIX = riscv-none-embed-
 
 CC      = $(PREFIX)gcc
 CXX     = $(PREFIX)g++
@@ -23,7 +23,7 @@ LST = $(BUILD_DIR)/$(TARGET).lst
 COMMON_FLAGS = -march=rv32imacxw -mabi=ilp32 -mcmodel=medany \
 -msmall-data-limit=8 -mno-save-restore -fmax-errors=20 -Os \
 -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections \
--fno-common -g -ffreestanding
+-fno-common -g
 
 INCLUDES = \
 -I./SRC/Core \
