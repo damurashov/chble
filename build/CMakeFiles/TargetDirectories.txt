@@ -1,3 +1,0 @@
-/media/dm/HOME/CODE-20260327-Wch32v208/ch32blehid/build/CMakeFiles/HID_Mouse.elf.dir
-/media/dm/HOME/CODE-20260327-Wch32v208/ch32blehid/build/CMakeFiles/edit_cache.dir
-/media/dm/HOME/CODE-20260327-Wch32v208/ch32blehid/build/CMakeFiles/rebuild_cache.dir
