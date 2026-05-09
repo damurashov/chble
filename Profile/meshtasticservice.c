@@ -25,7 +25,7 @@ const uint8_t meshtasticServUUID[ATT_BT_UUID_SIZE] = {
     LO_UINT16(SCAN_PARAM_SERV_UUID), HI_UINT16(SCAN_PARAM_SERV_UUID)};
 
 // Scan interval window characteristic
-const uint8_t scanIntervalWindowUUID[ATT_BT_UUID_SIZE] = {
+const uint8_t meshtasticIntervalWindowUUID[ATT_BT_UUID_SIZE] = {
     LO_UINT16(SCAN_INTERVAL_WINDOW_UUID), HI_UINT16(SCAN_INTERVAL_WINDOW_UUID)};
 
 // Scan parameter refresh characteristic
@@ -85,7 +85,7 @@ static gattAttribute_t meshtasticAttrTbl[] = {
 
     // Scan Interval Window characteristic
     {
-        {ATT_BT_UUID_SIZE, scanIntervalWindowUUID},
+        {ATT_BT_UUID_SIZE, meshtasticIntervalWindowUUID},
         GATT_PERMIT_ENCRYPT_WRITE,
         0,
         scanIntervalWindow},

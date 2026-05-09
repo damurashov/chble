@@ -188,7 +188,8 @@ void HidDev_Init()
 
     // Register for Scan Parameters service callback
     ScanParam_Register(hidDevScanParamCB);
-    Meshtastic_Reister(hidDevMeshtasticCb);
+    // TODO DM
+    // Meshtastic_Register(hidDevMeshtasticCb);
 
     // Setup a delayed profile startup
     tmos_set_event(hidDevTaskId, START_DEVICE_EVT);
@@ -934,6 +935,7 @@ static void hidDevBattCB(uint8_t event)
 static void hidDevScanParamCB(uint8_t event)
 {
 }
+
 
 static void hidDevMeshtasticCb(uint8_t event)
 {

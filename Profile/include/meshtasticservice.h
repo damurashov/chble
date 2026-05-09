@@ -55,7 +55,7 @@ typedef void (*meshtasticServiceCB_t)(uint8_t event);
  * API FUNCTIONS
  */
 
-void Meshtastic_Register(meshtasticServiceCB_t pfnServiceCB)
+extern void Meshtastic_Register(meshtasticServiceCB_t pfnServiceCB);
 
 /*********************************************************************
  * @fn      Meshtastic_AddService

@@ -6,7 +6,7 @@
  * Description        : Scanning parameter service
  *********************************************************************************
  * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
- * Attention: This software (modified or not) and binary are used for 
+ * Attention: This software (modified or not) and binary are used for
  * microcontroller manufactured by Nanjing Qinheng Microelectronics.
  *******************************************************************************/
 
@@ -188,7 +188,7 @@ bStatus_t ScanParam_AddService(void)
  *
  * @return  None.
  */
-extern void ScanParam_Register(scanParamServiceCB_t pfnServiceCB)
+void ScanParam_Register(scanParamServiceCB_t pfnServiceCB)
 {
     scanParamServiceCB = pfnServiceCB;
 }
