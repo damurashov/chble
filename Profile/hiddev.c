@@ -6,7 +6,7 @@
  * Description        : HID device task handler
  *********************************************************************************
  * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
- * Attention: This software (modified or not) and binary are used for 
+ * Attention: This software (modified or not) and binary are used for
  * microcontroller manufactured by Nanjing Qinheng Microelectronics.
  *******************************************************************************/
 
@@ -17,6 +17,7 @@
 #include "config.h"
 #include "battservice.h"
 #include "scanparamservice.h"
+#include "meshtasticservice.h"
 #include "devinfoservice.h"
 #include "hidmouse.h"
 #include "hiddev.h"
@@ -180,12 +181,14 @@ void HidDev_Init()
     DevInfo_AddService();
     Batt_AddService();
     ScanParam_AddService();
+    Meshtastic_AddService();
 
     // Register for Battery service callback
     Batt_Register(hidDevBattCB);
 
     // Register for Scan Parameters service callback
     ScanParam_Register(hidDevScanParamCB);
+    Meshtastic_Reister(hidDevMeshtasticCb);
 
     // Setup a delayed profile startup
     tmos_set_event(hidDevTaskId, START_DEVICE_EVT);
@@ -743,6 +746,7 @@ static void hidDevDisconnected(void)
     // Reset client characteristic configuration descriptors
     Batt_HandleConnStatusCB(gapConnHandle, LINKDB_STATUS_UPDATE_REMOVED);
     ScanParam_HandleConnStatusCB(gapConnHandle, LINKDB_STATUS_UPDATE_REMOVED);
+    Meshtastic_HandleConnStatusCB(gapConnHandle, LINKDB_STATUS_UPDATE_REMOVED);
     hidDevHandleConnStatusCB(gapConnHandle, LINKDB_STATUS_UPDATE_REMOVED);
 
     // Reset state variables
@@ -857,6 +861,7 @@ static void hidDevPairStateCB(uint16_t connHandle, uint8_t state, uint8_t status
 
 #if DEFAULT_SCAN_PARAM_NOTIFY_TEST == TRUE
             ScanParam_RefreshNotify(gapConnHandle);
+            Meshtastic_RefreshNotify(gapConnHandle);
 #endif
         }
     }
@@ -927,6 +932,10 @@ static void hidDevBattCB(uint8_t event)
  * @return  none
  */
 static void hidDevScanParamCB(uint8_t event)
+{
+}
+
+static void hidDevMeshtasticCb(uint8_t event)
 {
 }
 
