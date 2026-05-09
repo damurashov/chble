@@ -16,6 +16,7 @@ BUILD_DIR = build
 
 ELF = $(BUILD_DIR)/$(TARGET).elf
 HEX = $(BUILD_DIR)/$(TARGET).hex
+BIN = $(BUILD_DIR)/$(TARGET).bin
 MAP = $(BUILD_DIR)/$(TARGET).map
 LST = $(BUILD_DIR)/$(TARGET).lst
 
@@ -103,6 +104,7 @@ $(ELF): $(OBJS)
 	@mkdir -p $(dir $@)
 	$(CC) $(OBJS) $(LDFLAGS) $(LIBS) -o $@
 	$(OBJCOPY) -O ihex $@ $(HEX)
+	$(OBJCOPY) -O binary $@ $(BIN)
 	$(OBJDUMP) --source --all-headers --demangle -M xw --line-numbers --wide $@ > $(LST)
 	$(SIZE) --format=berkeley $@
 
