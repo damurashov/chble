@@ -13,6 +13,21 @@
  * CONSTANTS
  */
 
+// Scan Characteristic Lengths
+#define SCAN_INTERVAL_WINDOW_CHAR_LEN    4
+#define SCAN_PARAM_REFRESH_LEN           1
+
+// Scan Parameter Refresh Values
+#define SCAN_PARAM_REFRESH_REQ           0x00
+
+// Callback events
+#define SCAN_INTERVAL_WINDOW_SET         1
+
+// Get/Set parameters
+#define SCAN_PARAM_PARAM_INTERVAL        0
+#define SCAN_PARAM_PARAM_WINDOW          1
+
+
 /*********************************************************************
  * TYPEDEFS
  */
