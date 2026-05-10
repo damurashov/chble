@@ -35,15 +35,39 @@
 /*********************************************************************
  * GLOBAL VARIABLES
  */
-// Scan parameters service
-const uint8_t meshtasticServUUID[ATT_BT_UUID_SIZE] = {
-    LO_UINT16(SCAN_PARAM_SERV_UUID), HI_UINT16(SCAN_PARAM_SERV_UUID)};
+// Meshtastic service
+const uint8_t meshtasticServUUID[ATT_UUID_SIZE] = {
+    0x6b, 0xa1, 0xb2, 0x18, 0x15, 0xa8, 0x46, 0x1f, 0x9f, 0xa8, 0x5d, 0xca, 0xe2, 0x73, 0xea,
+};
+
+// Meshtastic to-radio characteristic
+const uint8_t meshtasticToRadioCharacteristicUUID[ATT_UUID_SIZE] = {
+    0xf7, 0x5c, 0x76, 0xd2, 0x12, 0x9e, 0x4d, 0xad, 0xa1, 0xdd, 0x78, 0x66, 0x12, 0x44, 0x01, 0xe7
+};
+
+const uint8_t meshtasticFromRadioCharacteristicUUID[ATT_UUID_SIZE] = {
+    0x2c, 0x55, 0xe6, 0x9e, 0x49, 0x93, 0x11, 0xed, 0xb8, 0x78, 0x02, 0x42, 0xac, 0x12, 0x00, 0x02
+};
+
+const uint8_t meshtasticFromNumCharacteristicUUID[ATT_UUID_SIZE] = {
+    0xed, 0x9d, 0xa1, 0x8c, 0xa8, 0x00, 0x4f, 0x66, 0xa6, 0x70, 0xaa, 0x75, 0x47, 0xe3, 0x44, 0x53
+};
+
+const uint8_t meshtasticLegacyLogradioCharacteristicUUID[ATT_UUID_SIZE] = {
+    0x6c, 0x6f, 0xd2, 0x38, 0x78, 0xfa, 0x43, 0x6b, 0xaa, 0xcf, 0x15, 0xc5, 0xbe, 0x1e, 0xf2, 0xe2
+};
+
+const uint8_t meshtasticLogradioCharacteristicUUID[ATT_UUID_SIZE] = {
+    0x5a, 0x3d, 0x6e, 0x49, 0x06, 0xe6, 0x44, 0x23, 0x99, 0x44, 0xe9, 0xde, 0x8c, 0xdf, 0x95, 0x47
+};
 
 // Scan interval window characteristic
+// TODO DM remove
 const uint8_t meshtasticIntervalWindowUUID[ATT_BT_UUID_SIZE] = {
     LO_UINT16(SCAN_INTERVAL_WINDOW_UUID), HI_UINT16(SCAN_INTERVAL_WINDOW_UUID)};
 
 // Scan parameter refresh characteristic
+// TODO DM remove
 const uint8_t meshtasticRefreshUUID[ATT_BT_UUID_SIZE] = {
     LO_UINT16(SCAN_REFRESH_UUID), HI_UINT16(SCAN_REFRESH_UUID)};
 
@@ -67,7 +91,8 @@ static meshtasticServiceCB_t meshtasticServiceCB;
  */
 
 // Scan Parameters Service attribute
-static const gattAttrType_t meshtasticService = {ATT_BT_UUID_SIZE, meshtasticServUUID};
+static
+const gattAttrType_t meshtasticService = {ATT_UUID_SIZE, meshtasticServUUID};
 
 // Scan Interval Window characteristic
 static uint8_t scanIntervalWindowProps = GATT_PROP_WRITE_NO_RSP;
@@ -85,46 +110,11 @@ static gattCharCfg_t meshtasticRefreshClientCharCfg[GATT_MAX_NUM_CONN];
 static gattAttribute_t meshtasticAttrTbl[] = {
     // Scan Parameters Service attribute
     {
-        {ATT_BT_UUID_SIZE, primaryServiceUUID}, /* type */
+        {ATT_UUID_SIZE, primaryServiceUUID}, /* type */
         GATT_PERMIT_READ,                       /* permissions */
         0,                                      /* handle */
         (uint8_t *)&meshtasticService            /* pValue */
     },
-
-    // Scan Interval Window declaration
-    {
-        {ATT_BT_UUID_SIZE, characterUUID},
-        GATT_PERMIT_READ,
-        0,
-        &scanIntervalWindowProps},
-
-    // Scan Interval Window characteristic
-    {
-        {ATT_BT_UUID_SIZE, meshtasticIntervalWindowUUID},
-        GATT_PERMIT_ENCRYPT_WRITE,
-        0,
-        scanIntervalWindow},
-
-    // Scan Parameter Refresh declaration
-    {
-        {ATT_BT_UUID_SIZE, characterUUID},
-        GATT_PERMIT_READ,
-        0,
-        &meshtasticRefreshProps},
-
-    // Scan Parameter Refresh characteristic
-    {
-        {ATT_BT_UUID_SIZE, meshtasticRefreshUUID},
-        0,
-        0,
-        meshtasticRefresh},
-
-    // Scan Parameter Refresh characteristic client characteristic configuration
-    {
-        {ATT_BT_UUID_SIZE, clientCharCfgUUID},
-        GATT_PERMIT_READ | GATT_PERMIT_ENCRYPT_WRITE,
-        0,
-        (uint8_t *)&meshtasticRefreshClientCharCfg}
 };
 
 // Attribute index enumeration-- these indexes match array elements above
