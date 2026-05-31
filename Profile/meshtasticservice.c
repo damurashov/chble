@@ -45,10 +45,6 @@ const uint8_t meshtasticToRadioCharacteristicUUID[ATT_UUID_SIZE] = {
     0xf7, 0x5c, 0x76, 0xd2, 0x12, 0x9e, 0x4d, 0xad, 0xa1, 0xdd, 0x78, 0x66, 0x12, 0x44, 0x01, 0xe7
 };
 
-const uint8_t meshtasticFromRadioCharacteristicUUID[ATT_UUID_SIZE] = {
-    0x2c, 0x55, 0xe6, 0x9e, 0x49, 0x93, 0x11, 0xed, 0xb8, 0x78, 0x02, 0x42, 0xac, 0x12, 0x00, 0x02
-};
-
 const uint8_t meshtasticFromNumCharacteristicUUID[ATT_UUID_SIZE] = {
     0xed, 0x9d, 0xa1, 0x8c, 0xa8, 0x00, 0x4f, 0x66, 0xa6, 0x70, 0xaa, 0x75, 0x47, 0xe3, 0x44, 0x53
 };
@@ -65,11 +61,6 @@ const uint8_t meshtasticLogradioCharacteristicUUID[ATT_UUID_SIZE] = {
 // TODO DM remove
 const uint8_t meshtasticIntervalWindowUUID[ATT_BT_UUID_SIZE] = {
     LO_UINT16(SCAN_INTERVAL_WINDOW_UUID), HI_UINT16(SCAN_INTERVAL_WINDOW_UUID)};
-
-// Scan parameter refresh characteristic
-// TODO DM remove
-const uint8_t meshtasticRefreshUUID[ATT_BT_UUID_SIZE] = {
-    LO_UINT16(SCAN_REFRESH_UUID), HI_UINT16(SCAN_REFRESH_UUID)};
 
 /*********************************************************************
  * EXTERNAL VARIABLES
@@ -91,17 +82,15 @@ static meshtasticServiceCB_t meshtasticServiceCB;
  */
 
 // Scan Parameters Service attribute
-static
-const gattAttrType_t meshtasticService = {ATT_UUID_SIZE, meshtasticServUUID};
+static const gattAttrType_t meshtasticService = {ATT_UUID_SIZE, meshtasticServUUID};
 
-// Scan Interval Window characteristic
-static uint8_t scanIntervalWindowProps = GATT_PROP_WRITE_NO_RSP;
-static uint8_t scanIntervalWindow[SCAN_INTERVAL_WINDOW_CHAR_LEN];
 
-// Scan Parameter Refresh characteristic
-static uint8_t       meshtasticRefreshProps = GATT_PROP_NOTIFY;
-static uint8_t       meshtasticRefresh[SCAN_PARAM_REFRESH_LEN];
-static gattCharCfg_t meshtasticRefreshClientCharCfg[GATT_MAX_NUM_CONN];
+const uint8_t meshtasticFromRadioCharacteristicUUID[ATT_UUID_SIZE] = {
+    0x2c, 0x55, 0xe6, 0x9e, 0x49, 0x93, 0x11, 0xed, 0xb8, 0x78, 0x02, 0x42, 0xac, 0x12, 0x00, 0x02
+};
+static uint8_t fromradioProps = GATT_PROP_READ;
+// TODO DM: is it the correct buffer size?
+static uint8_t fromradioBuf[256];
 
 /*********************************************************************
  * Profile Attributes - Table
@@ -115,6 +104,22 @@ static gattAttribute_t meshtasticAttrTbl[] = {
         0,                                      /* handle */
         (uint8_t *)&meshtasticService            /* pValue */
     },
+    // FROMRADIO_UUID declaration (TODO DM I am unsure. The table seems to follow
+    // service-declaration-definition-declaration-definition-... structure)
+    {
+        {ATT_UUID_SIZE, characterUUID},
+        GATT_PERMIT_READ,
+        0,
+        &fromradioProps,
+    },
+    // FROMRADIO_UUID definition
+    {
+        {ATT_UUID_SIZE, meshtasticFromRadioCharacteristicUUID},
+        GATT_PERMIT_READ,
+        0,
+        // TODO DM XXX? Should I also handle it in read/write callbacks somehow?
+        &fromradioBuf,
+    }
 };
 
 // Attribute index enumeration-- these indexes match array elements above
@@ -162,9 +167,6 @@ gattServiceCBs_t meshtasticCBs = {
 bStatus_t Meshtastic_AddService(void)
 {
     uint8_t status = SUCCESS;
-
-    // Initialize Client Characteristic Configuration attributes
-    GATTServApp_InitCharCfg(INVALID_CONNHANDLE, meshtasticRefreshClientCharCfg);
 
     // Register GATT attribute list and CBs with GATT Server App
     status = GATTServApp_RegisterService(meshtasticAttrTbl, GATT_NUM_ATTRS(meshtasticAttrTbl), GATT_MAX_ENCRYPT_KEY_SIZE,
@@ -231,23 +233,8 @@ bStatus_t Meshtastic_SetParameter(uint8_t param, uint8_t len, void *value)
 bStatus_t Meshtastic_GetParameter(uint8_t param, void *value)
 {
     bStatus_t ret = SUCCESS;
-    switch(param)
-    {
-        case SCAN_PARAM_PARAM_INTERVAL:
-            *((uint16_t *)value) = BUILD_UINT16(scanIntervalWindow[0],
-                                                scanIntervalWindow[1]);
-            break;
 
-        case SCAN_PARAM_PARAM_WINDOW:
-            *((uint16_t *)value) = BUILD_UINT16(scanIntervalWindow[2],
-                                                scanIntervalWindow[3]);
-            break;
-
-        default:
-            ret = INVALIDPARAMETER;
-            break;
-    }
-
+    // TODO DM
     return (ret);
 }
 
@@ -262,28 +249,6 @@ bStatus_t Meshtastic_GetParameter(uint8_t param, void *value)
  */
 void Meshtastic_RefreshNotify(uint16_t connHandle)
 {
-    uint16_t value;
-
-    value = GATTServApp_ReadCharCfg(connHandle, meshtasticRefreshClientCharCfg);
-    if(value & GATT_CLIENT_CFG_NOTIFY)
-    {
-        attHandleValueNoti_t noti;
-
-        noti.pValue = GATT_bm_alloc(connHandle, ATT_HANDLE_VALUE_NOTI,
-                                    SCAN_PARAM_REFRESH_LEN, NULL, 0);
-        if(noti.pValue != NULL)
-        {
-            // send notification
-            noti.handle = meshtasticAttrTbl[SCAN_PARAM_REFRESH_IDX].handle;
-            noti.len = SCAN_PARAM_REFRESH_LEN;
-            noti.pValue[0] = SCAN_PARAM_REFRESH_REQ;
-
-            if(GATT_Notification(connHandle, &noti, FALSE) != SUCCESS)
-            {
-                GATT_bm_free((gattMsg_t *)&noti, ATT_HANDLE_VALUE_NOTI);
-            }
-        }
-    }
 }
 
 /*********************************************************************
@@ -324,51 +289,7 @@ static bStatus_t meshtasticReadAttrCB(uint16_t connHandle, gattAttribute_t *pAtt
 static bStatus_t meshtasticWriteAttrCB(uint16_t connHandle, gattAttribute_t *pAttr,
                                       uint8_t *pValue, uint16_t len, uint16_t offset, uint8_t method)
 {
-    uint16_t  uuid;
     bStatus_t status = SUCCESS;
-
-    // Make sure it's not a blob operation (no attributes in the profile are long)
-    if(offset > 0)
-    {
-        return (ATT_ERR_ATTR_NOT_LONG);
-    }
-
-    uuid = BUILD_UINT16(pAttr->type.uuid[0], pAttr->type.uuid[1]);
-
-    // Only one writeable attribute
-    if(uuid == SCAN_INTERVAL_WINDOW_UUID)
-    {
-        if(len == SCAN_INTERVAL_WINDOW_CHAR_LEN)
-        {
-            uint16_t interval = BUILD_UINT16(pValue[0], pValue[1]);
-            uint16_t window = BUILD_UINT16(pValue[0], pValue[1]);
-
-            // Validate values
-            if(window <= interval)
-            {
-                tmos_memcpy(pAttr->pValue, pValue, len);
-
-                (*meshtasticServiceCB)(SCAN_INTERVAL_WINDOW_SET);
-            }
-            else
-            {
-                status = ATT_ERR_INVALID_VALUE;
-            }
-        }
-        else
-        {
-            status = ATT_ERR_INVALID_VALUE_SIZE;
-        }
-    }
-    else if(uuid == GATT_CLIENT_CHAR_CFG_UUID)
-    {
-        status = GATTServApp_ProcessCCCWriteReq(connHandle, pAttr, pValue, len,
-                                                offset, GATT_CLIENT_CFG_NOTIFY);
-    }
-    else
-    {
-        status = ATT_ERR_ATTR_NOT_FOUND;
-    }
 
     return (status);
 }
@@ -393,7 +314,7 @@ void Meshtastic_HandleConnStatusCB(uint16_t connHandle, uint8_t changeType)
            ((changeType == LINKDB_STATUS_UPDATE_STATEFLAGS) &&
             (!linkDB_Up(connHandle))))
         {
-            GATTServApp_InitCharCfg(connHandle, meshtasticRefreshClientCharCfg);
+            // GATTServApp_InitCharCfg(connHandle, meshtasticRefreshClientCharCfg);
         }
     }
 }

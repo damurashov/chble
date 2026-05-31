@@ -184,15 +184,13 @@ void HidDev_Init()
     GGS_AddService(GATT_ALL_SERVICES);         // GAP
     GATTServApp_AddService(GATT_ALL_SERVICES); // GATT attributes
     DevInfo_AddService();
-    Batt_AddService();
-    ScanParam_AddService();
+    // Batt_AddService();
+    // ScanParam_AddService();
     Meshtastic_AddService();
 
     // Register for Battery service callback
-    Batt_Register(hidDevBattCB);
+    // Batt_Register(hidDevBattCB);
 
-    // Register for Scan Parameters service callback
-    ScanParam_Register(hidDevScanParamCB);
     // TODO DM
     Meshtastic_Register(hidDevMeshtasticCb);
 
