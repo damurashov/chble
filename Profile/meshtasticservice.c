@@ -107,7 +107,7 @@ static gattAttribute_t meshtasticAttrTbl[] = {
     // FROMRADIO_UUID declaration (TODO DM I am unsure. The table seems to follow
     // service-declaration-definition-declaration-definition-... structure)
     {
-        {ATT_UUID_SIZE, characterUUID},
+        {ATT_BT_UUID_SIZE, characterUUID},
         GATT_PERMIT_READ,
         0,
         &fromradioProps,
