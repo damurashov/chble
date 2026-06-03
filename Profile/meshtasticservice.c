@@ -37,7 +37,7 @@
  */
 // Meshtastic service
 const uint8_t meshtasticServUUID[ATT_UUID_SIZE] = {
-    0x6b, 0xa1, 0xb2, 0x18, 0x15, 0xa8, 0x46, 0x1f, 0x9f, 0xa8, 0x5d, 0xca, 0xe2, 0x73, 0xea,
+    0x6b, 0xa1, 0xb2, 0x18, 0x15, 0xa8, 0x46, 0x1f, 0x9f, 0xa8, 0x5d, 0xca, 0xe2, 0x73, 0xea, 0xfd
 };
 
 // Meshtastic to-radio characteristic
@@ -99,7 +99,7 @@ static uint8_t fromradioBuf[256];
 static gattAttribute_t meshtasticAttrTbl[] = {
     // Scan Parameters Service attribute
     {
-        {ATT_UUID_SIZE, primaryServiceUUID}, /* type */
+        {ATT_BT_UUID_SIZE, primaryServiceUUID}, /* type */
         GATT_PERMIT_READ,                       /* permissions */
         0,                                      /* handle */
         (uint8_t *)&meshtasticService            /* pValue */
