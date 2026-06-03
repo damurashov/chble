@@ -75,6 +75,12 @@ static uint8_t fromradioProps = GATT_PROP_READ;
 // TODO DM: is it the correct buffer size?
 static uint8_t fromradioBuf[256];
 
+const uint8_t meshtasticToRadioCharacteristicUUID[ATT_UUID_SIZE] = {
+    0xe7, 0x1, 0x44, 0x12, 0x66, 0x78, 0xdd, 0xa1, 0xad, 0x4d, 0x9e, 0x12, 0xd2, 0x76, 0x5c, 0xf7
+};
+static uint8_t toradioProps = GATT_PROP_WRITE;
+static uint8_t toradioBuf[256];
+
 /*********************************************************************
  * Profile Attributes - Table
  */
@@ -98,10 +104,26 @@ static gattAttribute_t meshtasticAttrTbl[] = {
     // FROMRADIO_UUID definition
     {
         {ATT_UUID_SIZE, meshtasticFromRadioCharacteristicUUID},
+        // TODO DM XXX READ must require authentication, authorization, and encryption?
         GATT_PERMIT_READ,
         0,
         // TODO DM XXX? Should I also handle it in read/write callbacks somehow?
         &fromradioBuf,
+    },
+    // TORADIO_UUID declaration
+    {
+        {ATT_BT_UUID_SIZE, characterUUID},
+        GATT_PERMIT_READ,
+        0,
+        &toradioProps,
+    },
+    // TORADIO_UUID definition
+    {
+        {ATT_UUID_SIZE, meshtasticToRadioCharacteristicUUID},
+        // TODO DM XXX WRITE must require authentication, authorization, and encryption?
+        GATT_PERMIT_WRITE,
+        0,
+        &toradioBuf,
     }
 };
 
