@@ -78,8 +78,15 @@ static uint8_t fromradioBuf[256];
 const uint8_t meshtasticToRadioCharacteristicUUID[ATT_UUID_SIZE] = {
     0xe7, 0x1, 0x44, 0x12, 0x66, 0x78, 0xdd, 0xa1, 0xad, 0x4d, 0x9e, 0x12, 0xd2, 0x76, 0x5c, 0xf7
 };
-static uint8_t toradioProps = GATT_PROP_WRITE;
+static uint8_t toradioProps = GATT_PROP_WRITE
 static uint8_t toradioBuf[256];
+
+const uint8_t mestasticLogradioCharacteristicUUID[ATT_UUID_SIZE] = {
+    0x47, 0x95, 0xdf, 0x8c, 0xde, 0xe9, 0x44, 0x99, 0x23, 0x44, 0xe6, 0x06, 0x49, 0x6e, 0x3d, 0x5a,
+};
+static uint8_t logradioProps = GATT_PROP_NOTIFY | GATT_PROP_READ;
+// TODO DM Check on that. Is that what we need?
+static uint8_t logradioBuf[256];
 
 /*********************************************************************
  * Profile Attributes - Table
@@ -124,6 +131,20 @@ static gattAttribute_t meshtasticAttrTbl[] = {
         GATT_PERMIT_WRITE,
         0,
         &toradioBuf,
+    },
+    // LOGRADIO_UUID declaration
+    {
+        {ATT_BT_UUID_SIZE, characterUUID},
+        GATT_PERMIT_READ,
+        0,
+        &logradioProps
+    },
+    // LOGRADIO_UUID definition
+    {
+        {ATT_UUID_SIZE, mestasticLogradioCharacteristicUUID},
+        GATT_PERMIT_READ,
+        0,
+        &logradioBuf
     }
 };
 
