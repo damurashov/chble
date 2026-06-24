@@ -86,7 +86,7 @@ const uint8_t mestasticLogradioCharacteristicUUID[ATT_UUID_SIZE] = {
 };
 static uint8_t logradioProps = GATT_PROP_NOTIFY | GATT_PROP_READ;
 // TODO DM Check on that. Is that what we need?
-static uint8_t logradioBuf[256];
+static uint8_t logradioBuf[256] = {0};
 
 /*********************************************************************
  * Profile Attributes - Table
@@ -295,6 +295,9 @@ static bStatus_t meshtasticReadAttrCB(uint16_t connHandle, gattAttribute_t *pAtt
                                      uint8_t *pValue, uint16_t *pLen, uint16_t offset, uint16_t maxLen, uint8_t method)
 {
     bStatus_t status = SUCCESS;
+
+    memcpy(pValue, "Hello", 5);
+    *pLen = 5;
 
     return (status);
 }
