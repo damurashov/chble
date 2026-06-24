@@ -6,7 +6,7 @@
  * Description        : Device information service
  *********************************************************************************
  * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
- * Attention: This software (modified or not) and binary are used for 
+ * Attention: This software (modified or not) and binary are used for
  * microcontroller manufactured by Nanjing Qinheng Microelectronics.
  *******************************************************************************/
 
@@ -153,8 +153,8 @@ static gattAttribute_t devInfoAttrTbl[] = {
         {ATT_BT_UUID_SIZE, characterUUID},
         GATT_PERMIT_READ,
         0,
-        &devInfoSystemIdProps},
-
+        &devInfoSystemIdProps
+    },
     // System ID Value
     {
         {ATT_BT_UUID_SIZE, devInfoSystemIdUUID},

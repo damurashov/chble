@@ -61,6 +61,7 @@ Profile/devinfoservice.c \
 Profile/hiddev.c \
 Profile/hidmouseservice.c \
 Profile/scanparamservice.c \
+Profile/meshtasticservice.c \
 APP/ch32v20x_it.c \
 APP/hidmouse.c \
 APP/hidmouse_main.c \
