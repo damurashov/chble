@@ -78,7 +78,7 @@ static uint8_t fromradioBuf[256];
 const uint8_t meshtasticToRadioCharacteristicUUID[ATT_UUID_SIZE] = {
     0xe7, 0x1, 0x44, 0x12, 0x66, 0x78, 0xdd, 0xa1, 0xad, 0x4d, 0x9e, 0x12, 0xd2, 0x76, 0x5c, 0xf7
 };
-static uint8_t toradioProps = GATT_PROP_WRITE
+static uint8_t toradioProps = GATT_PROP_WRITE;
 static uint8_t toradioBuf[256];
 
 const uint8_t mestasticLogradioCharacteristicUUID[ATT_UUID_SIZE] = {
